@@ -104,6 +104,19 @@
       </v-col>
     </v-row>
   </v-container>
+
+  <!-- Dialog for MQTT Topic Input -->
+  <v-dialog v-model="dialog" max-width="600px">
+    <v-card>
+      <v-card-title>Enter MQTT Topic</v-card-title>
+      <v-card-text>
+        <v-text-field v-model="mqttTopic" label="Topic" outlined></v-text-field>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="primary" @click="subscribeToTopic">Subscribe</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
@@ -138,6 +151,8 @@ const route = useRoute();
 
 const Mqtt = useMqttStore();
 const { payload, payloadTopic } = storeToRefs(Mqtt);
+const mqttTopic = ref(""); // Variable to store MQTT topic input
+const dialog = ref(false); // Variable to control the dialog visibility
 
 const tempHiChart = ref(null); // Chart object
 const humChart = ref(null); // Chart object
@@ -155,19 +170,31 @@ const shift = ref(false); // Delete a point from the left side and append a new 
 
 onMounted(() => {
   // THIS FUNCTION IS CALLED AFTER THIS COMPONENT HAS BEEN MOUNTED
+  const storedTopic = localStorage.getItem("mqttTopic");
+  if(storedTopic !==""){
+    mqttTopic.value = storedTopic;
+  }
+  dialog.value = true;
   CreateCharts();
   CreateCharts_2();
   CreateCharts_3();
   CreateCharts_4();
 
   Mqtt.connect(); // Connect to Broker located on the backend
-  setTimeout(() => {
-    // Subscribe to each topic
-    Mqtt.subscribe("620152511");
-    Mqtt.subscribe("620152511_sub");
-  }, 3000);
+ 
 });
-
+const subscribeToTopic = () => {
+  // Subscribe to the MQTT topic provided by the user
+  if (mqttTopic.value.trim() !== "") {
+    Mqtt.subscribe(mqttTopic.value);
+    Mqtt.subscribe(mqttTopic.value + "_sub");
+    dialog.value = false; // Close the dialog after subscription
+    localStorage.setItem("mqttTopic", mqttTopic.value); // Store the topic in local storage
+  } else {
+    // Show an error message if the topic is empty
+    alert("Please enter a valid MQTT topic.");
+  }
+};
 onBeforeUnmount(() => {
   // THIS FUNCTION IS CALLED RIGHT BEFORE THIS COMPONENT IS UNMOUNTED
   // unsubscribe from all topics
