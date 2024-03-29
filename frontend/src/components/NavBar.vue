@@ -3,7 +3,7 @@
             <VContainer fluid>
                     <VRow align="center" justify="center">
                         <VCol cols="1" align="left" >
-                            
+                            <v-img src="@/assets/user.png" contain class="AVATAR"></v-img>
                         </VCol>
 
                         
