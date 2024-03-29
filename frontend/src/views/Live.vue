@@ -1,5 +1,6 @@
 <template>
   <v-container class="container" align="center">
+    <v-btn @click="openDialog" class="change-topic-btn" color="primary">Change Topic</v-btn>
     <v-row class="row">
       <v-col cols="9">
         <figure class="highcharts-figure" >
@@ -110,7 +111,7 @@
     <v-card>
       <v-card-title>Enter MQTT Topic</v-card-title>
       <v-card-text>
-        <v-text-field v-model="mqttTopic" label="Topic" outlined></v-text-field>
+        <v-text-field v-model="mqttTopic" label="Topic" outlined ></v-text-field>
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" @click="subscribeToTopic">Subscribe</v-btn>
@@ -174,18 +175,26 @@ onMounted(() => {
   if(storedTopic !==""){
     mqttTopic.value = storedTopic;
   }
-  dialog.value = true;
   CreateCharts();
   CreateCharts_2();
   CreateCharts_3();
   CreateCharts_4();
 
   Mqtt.connect(); // Connect to Broker located on the backend
+  setTimeout(() => {
+    // Subscribe to each topic
+    Mqtt.subscribe("620152511");
+    Mqtt.subscribe("620152511_sub");
+  }, 3000);
  
 });
+const openDialog = () => {
+  dialog.value = true;
+}
 const subscribeToTopic = () => {
   // Subscribe to the MQTT topic provided by the user
   if (mqttTopic.value.trim() !== "") {
+    clearCharts();
     Mqtt.subscribe(mqttTopic.value);
     Mqtt.subscribe(mqttTopic.value + "_sub");
     dialog.value = false; // Close the dialog after subscription
@@ -431,6 +440,15 @@ const autoRefresh = () => {
   location.reload(); // Reload the page
 };
 
+const clearCharts = () => {
+  // Clear chart data
+  tempHiChart.value.series[0].setData([], true);
+  tempHiChart.value.series[1].setData([], true);
+  humChart.value.series[0].setData([], true);
+  humChart.value.series[1].setData([], true);
+  pressChart.value.series[0].setData([], true);
+  altChart.value.series[0].setData([], true);
+};
 
 document.addEventListener('FailEvent', autoRefresh);
 document.addEventListener('LostEvent', autoRefresh);
