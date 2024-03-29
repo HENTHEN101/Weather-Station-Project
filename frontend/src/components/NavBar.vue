@@ -3,7 +3,7 @@
             <VContainer fluid>
                     <VRow align="center" justify="center">
                         <VCol cols="1" align="left" >
-                            <v-img src="@/assets/user.png" contain class = "AVATAR"></v-img>
+                            
                         </VCol>
 
                         
@@ -48,7 +48,7 @@
     const theme       = useTheme();
     const darkmode    = ref(false); 
     const router      = useRouter();  
-    const route       = useRoute();  
+    const route       = useRoute();
 
     // WATCHERS
     watch(darkmode,  (mode) => {
@@ -76,6 +76,9 @@
         }  
     });
 
+    
+
+
  
   </script>
 
@@ -84,12 +87,6 @@
         text-decoration: none;
         margin-left: 8px;
         margin-right: 8px; 
-    }
-
-    .AVATAR {
-    border-radius: 50%;
-    width: 100px; /* Adjust the width and height as needed */
-    height: 80px;
     }
 
   </style>
