@@ -22,6 +22,7 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
     const payload           = ref({"temperature":0, "heatindex": 0, "humidity": 0,"soilmositure": 0,"pressure": 0,"altitude": 0}); // Set initial values for payload
     const payloadTopic      = ref("");
     const subTopics         = ref({});
+    const check             = ref(false);
  
 
 
@@ -34,7 +35,8 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
 
     const onConnected = (reconnect,URI)=> {
         // called when a connection is successfully made to the server. after a connect() method.
-        console.log(`Connected to: ${URI} , Reconnect: ${reconnect}`);      
+        console.log(`Connected to: ${URI} , Reconnect: ${reconnect}`); 
+        //alert(`Connection to: ${URI} was successful`); 
         if(reconnect){
             const topics = Object.keys(subTopics.value);
             if(topics.length > 0 ){
@@ -53,7 +55,6 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
         // connectionComplete call back being invoked if, for example the client fails to connect. 
         if (response.errorCode !== 0) {
             console.log(`MQTT: Connection lost - ${response.errorMessage}`);
-            document.dispatchEvent(new Event('LostEvent'));
         }
         }
   
@@ -61,8 +62,9 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
         // called when the connect request has failed or timed out.
         const host = response.invocationContext.host;   
         console.log(`MQTT: Connection to ${host} failed. \nError message : ${response.errorMessage}`); 
-        document.dispatchEvent(new Event('FailEvent'));                 
-        };
+        document.dispatchEvent(new Event('HostFailEvent'));
+        check.value=true;                
+        }
     
     const onMessageArrived = (response) => {
            // called when a message has arrived in this Paho.MQTT.client.
@@ -97,7 +99,8 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
     const sub_onFailure = (response) => {       
         // called when the subscribe request has failed or timed out.     
         const topic = response.invocationContext.topic;  
-        console.log(`MQTT: Failed to subscribe to - ${topic} \nError message : ${response.errorMessage}`);  
+        console.log(`MQTT: Failed to subscribe to - ${topic} \nError message : ${response.errorMessage}`);
+        document.dispatchEvent(new Event('LostEvent'));  
         }
 
     const subscribe = (topic) => {
@@ -110,7 +113,7 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
             console.log(`MQTT: Unable to Subscribe ${error} `);
         }
               
-        }
+    }
 
     
     // UNSUBSCRIBE UTIL FUNCTIONS
@@ -176,7 +179,7 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
 
  
     return {
-        host,  
+        host, 
         payload,
         payloadTopic,
         subscribe,
@@ -185,6 +188,7 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
         publish,
         connect,
         disconnect,
+        check,
        }
 },{ persist: true  });
 

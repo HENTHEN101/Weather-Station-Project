@@ -129,6 +129,14 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <v-dialog v-model="dialog2" max-width="400px">
+    <v-card>
+      <v-card-item>
+        <div>Sever Connection Failed. Page will refrsh in 5s</div>
+      </v-card-item>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
@@ -166,6 +174,7 @@ const { payload, payloadTopic } = storeToRefs(Mqtt);
 const mqttTopic = ref(""); // Variable to store MQTT topic input
 const mqttserver =ref(Mqtt.host);
 const dialog = ref(false); // Variable to control the dialog visibility
+const dialog2=ref(false);
 
 const tempHiChart = ref(null); // Chart object
 const humChart = ref(null); // Chart object
@@ -187,30 +196,28 @@ onMounted(() => {
   if(storedTopic !==""){
     mqttTopic.value = storedTopic;
   }
+  if(Mqtt.check == true){
+    dialog2.value=true;
+  }
+  dialog.value = true;
   CreateCharts();
   CreateCharts_2();
   CreateCharts_3();
   CreateCharts_4();
 
   Mqtt.connect(); // Connect to Broker located on the backend
-  setTimeout(() => {
-    // Subscribe to each topic
-    Mqtt.subscribe("620152511");
-    Mqtt.subscribe("620152511_sub");
-  }, 3000);
  
 });
 const openDialog = () => {
   dialog.value = true;
 };
-
 const Cancel = () =>{
   dialog.value=false;
 };
 
 const subscribeToTopic = () => {
   // Subscribe to the MQTT topic provided by the user
-  if (mqttTopic.value.trim() !== "") {
+  if (mqttTopic.value.trim() !== "" ) {
     clearCharts();
     Mqtt.subscribe(mqttTopic.value);
     Mqtt.subscribe(mqttTopic.value + "_sub");
@@ -455,7 +462,9 @@ watch(payload, (data) => {
 });
 
 const autoRefresh = () => {
-  location.reload(); // Reload the page
+  setTimeout(() => {
+    location.reload(); // Reload the page
+  }, 5000); // Refresh every 5000 milliseconds (5 seconds)
 };
 
 const clearCharts = () => {
@@ -468,7 +477,7 @@ const clearCharts = () => {
   altChart.value.series[0].setData([], true);
 };
 
-document.addEventListener('FailEvent', autoRefresh);
+document.addEventListener('HostFailEvent', autoRefresh);
 document.addEventListener('LostEvent', autoRefresh);
 </script>
 
