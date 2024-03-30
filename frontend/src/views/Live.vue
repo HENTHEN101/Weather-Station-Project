@@ -1,6 +1,16 @@
 <template>
+      <v-btn @click="openDialog" class="change-topic-btn" color="primary">Change Topic</v-btn>
   <v-container class="container" align="center">
-    <v-btn @click="openDialog" class="change-topic-btn" color="primary">Change Topic</v-btn>
+      <v-card
+      style="max-width: 500px;margin-bottom: 20px;" 
+      >
+        <v-card-title>MQTT Topic & Server Info</v-card-title>
+        <v-card-text>
+          <div>Topic: {{ mqttTopic }}</div>
+          <div>Server: {{ mqttserver }}</div>
+        </v-card-text>
+      </v-card>
+
     <v-row class="row">
       <v-col cols="9">
         <figure class="highcharts-figure" >
@@ -115,6 +125,7 @@
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" @click="subscribeToTopic">Subscribe</v-btn>
+        <v-btn color="primary" @click="Cancel">Cancel</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -153,6 +164,7 @@ const route = useRoute();
 const Mqtt = useMqttStore();
 const { payload, payloadTopic } = storeToRefs(Mqtt);
 const mqttTopic = ref(""); // Variable to store MQTT topic input
+const mqttserver =ref(Mqtt.host);
 const dialog = ref(false); // Variable to control the dialog visibility
 
 const tempHiChart = ref(null); // Chart object
@@ -190,7 +202,12 @@ onMounted(() => {
 });
 const openDialog = () => {
   dialog.value = true;
-}
+};
+
+const Cancel = () =>{
+  dialog.value=false;
+};
+
 const subscribeToTopic = () => {
   // Subscribe to the MQTT topic provided by the user
   if (mqttTopic.value.trim() !== "") {
@@ -204,6 +221,7 @@ const subscribeToTopic = () => {
     alert("Please enter a valid MQTT topic.");
   }
 };
+
 onBeforeUnmount(() => {
   // THIS FUNCTION IS CALLED RIGHT BEFORE THIS COMPONENT IS UNMOUNTED
   // unsubscribe from all topics
@@ -459,13 +477,13 @@ document.addEventListener('LostEvent', autoRefresh);
 .row {
   max-width: 1200px;
 }
-
 .container {
   background: linear-gradient(to bottom, #ee6b6e, #29C5F6,#0B6E4F, #0BA045);
   width: 1200px;
   height: 1900px;
+  margin-right:100px ;
+  margin-top: -50px;
 }
-
 figure {
   border: 2px solid rgb(0, 0, 0);
 }

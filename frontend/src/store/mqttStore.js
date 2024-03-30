@@ -175,7 +175,8 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
     };
 
  
-    return {  
+    return {
+        host,  
         payload,
         payloadTopic,
         subscribe,
