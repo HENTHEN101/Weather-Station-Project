@@ -7,7 +7,7 @@
         <v-card-title>MQTT Topic & Server Info</v-card-title>
         <v-card-text>
           <div>Topic: {{ mqttTopic }}</div>
-          <div>Server: {{ mqttserver }}</div>
+          <div>Server: {{ mqtthost }}</div>
         </v-card-text>
       </v-card>
 
@@ -133,7 +133,7 @@
   <v-dialog v-model="dialog2" max-width="400px">
     <v-card>
       <v-card-item>
-        <div>Sever Connection Failed. Page will refrsh in 5s</div>
+        <div>{{ type }} Connection {{ checkstat }}. Page will refresh in 5s</div>
       </v-card-item>
     </v-card>
   </v-dialog>
@@ -172,7 +172,9 @@ const route = useRoute();
 const Mqtt = useMqttStore();
 const { payload, payloadTopic } = storeToRefs(Mqtt);
 const mqttTopic = ref(""); // Variable to store MQTT topic input
-const mqttserver =ref("www.yanacreations.com");
+const mqtthost = ref("www.yanacreations.com");
+const checkstat = ref("failed");
+const type = ref("Server");
 const dialog = ref(false); // Variable to control the dialog visibility
 const dialog2=ref(false);
 
@@ -212,6 +214,14 @@ const openDialog = () => {
 const Cancel = () =>{
   dialog.value=false;
 };
+
+const check1 = () => {
+  dialog2.value=true;
+};
+const check2 =()=> {
+  checkstat.value  = "success";
+  dialog2.value=true;
+}
 
 const subscribeToTopic = () => {
   // Subscribe to the MQTT topic provided by the user
@@ -475,6 +485,8 @@ const clearCharts = () => {
   altChart.value.series[0].setData([], true);
 };
 
+document.addEventListener('HostFailEvent',check1);
+document.addEventListener('FailTopicEvent',check1);
 document.addEventListener('HostFailEvent', autoRefresh);
 document.addEventListener('FailTopicEvent', autoRefresh);
 </script>
@@ -487,7 +499,7 @@ document.addEventListener('FailTopicEvent', autoRefresh);
 .container {
   background: linear-gradient(to bottom, #ee6b6e, #29C5F6,#0B6E4F, #0BA045);
   width: 1200px;
-  height: 1900px;
+  height: 2000px;
   margin-right:100px ;
   margin-top: -50px;
 }
