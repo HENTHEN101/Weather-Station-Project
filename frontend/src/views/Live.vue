@@ -172,7 +172,7 @@ const route = useRoute();
 const Mqtt = useMqttStore();
 const { payload, payloadTopic } = storeToRefs(Mqtt);
 const mqttTopic = ref(""); // Variable to store MQTT topic input
-const mqttserver =ref(Mqtt.host);
+const mqttserver =ref("www.yanacreations.com");
 const dialog = ref(false); // Variable to control the dialog visibility
 const dialog2=ref(false);
 
@@ -196,10 +196,7 @@ onMounted(() => {
   if(storedTopic !==""){
     mqttTopic.value = storedTopic;
   }
-  if(Mqtt.check == true){
-    dialog2.value=true;
-  }
-  dialog.value = true;
+  dialog.value=true;
   CreateCharts();
   CreateCharts_2();
   CreateCharts_3();
@@ -211,6 +208,7 @@ onMounted(() => {
 const openDialog = () => {
   dialog.value = true;
 };
+
 const Cancel = () =>{
   dialog.value=false;
 };
@@ -478,7 +476,7 @@ const clearCharts = () => {
 };
 
 document.addEventListener('HostFailEvent', autoRefresh);
-document.addEventListener('LostEvent', autoRefresh);
+document.addEventListener('FailTopicEvent', autoRefresh);
 </script>
 
 
