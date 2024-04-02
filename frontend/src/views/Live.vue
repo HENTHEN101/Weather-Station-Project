@@ -199,17 +199,17 @@ onMounted(() => {
   // THIS FUNCTION IS CALLED AFTER THIS COMPONENT HAS BEEN MOUNTED
   //autoRefresh();
 
-  const storedTopic = localStorage.getItem("mqttTopic");
+  /*const storedTopic = localStorage.getItem("mqttTopic");
   if(storedTopic !==""){
     mqttTopic.value = storedTopic;
-  }
-  dialog.value=true;
+  }*/
   CreateCharts();
   CreateCharts_2();
   CreateCharts_3();
   CreateCharts_4();
 
   Mqtt.connect(); // Connect to Broker located on the backend
+  dialog.value=true;
 
  
 });
@@ -246,13 +246,15 @@ const check5 =()=> {
 };
 
 const subscribeToTopic = () => {
+ // Unsubscribe from the previous topic
+  //Mqtt.unsubcribe(mqttTopic.value);
   // Subscribe to the MQTT topic provided by the user
   if (mqttTopic.value.trim() !== "" ) {
     clearCharts();
     Mqtt.subscribe(mqttTopic.value);
     Mqtt.subscribe(mqttTopic.value + "_sub");
     dialog.value = false; // Close the dialog after subscription
-    localStorage.setItem("mqttTopic", mqttTopic.value); // Store the topic in local storage
+   localStorage.setItem("mqttTopic", mqttTopic.value); // Store the topic in local storage
   } else {
     // Show an error message if the topic is empty
     alert("Please enter a valid MQTT topic.");
@@ -454,7 +456,7 @@ const altitude = computed(() => {
 
 // WATCHERS
 watch(payload, (data) => {
-  if (points.value > 0) {
+  if (points.value > 0 ) {
     points.value--;
   } else {
     shift.value = true;

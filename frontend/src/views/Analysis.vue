@@ -163,10 +163,9 @@
       </v-col>
     </v-row>
     <v-row class="ma-5" align="center">
+      <v-divider></v-divider>
       <v-col align="center">
-        <p>Enter date range for Analysis</p>
-        <v-divider></v-divider>
-        <br />
+        <p style="margin-left: 130px;">Enter Analysis Range</p>
         <v-sheet class="sheet">
           <v-text-field
             v-model="start"
@@ -175,7 +174,7 @@
             dense
             solo-inverted
             class="mr-5"
-            :style="{ maxWidth: '210px' }"
+            style="max-width: 210px; margin-left: 130px;"
             flat
           ></v-text-field>
           <v-text-field
@@ -185,23 +184,32 @@
             dense
             solo-inverted
             class="mr-5"
-            :style="{ maxWidth: '210px' }"
+            style="max-width: 210px; margin-left: 10px;"
             flat
           ></v-text-field>
         </v-sheet>
-          <br />
           <v-btn
-            text="Analyze"
-            class="mr-5"
-            @click="
-              updateLineCharts(false);
-              updateCards(false);
-              updateHistogramCharts();
-            "
-            color="primary"
-            variant="tonal"
+          style="margin-left: 130px;"
+          text="Analyze"
+          class="mr-5"
+          @click="
+            updateLineCharts(false);
+            updateCards(false);
+            updateHistogramCharts();
+          "
+          color="primary"
+          variant="tonal"
           ></v-btn>
       </v-col>
+      <v-card
+        style="max-width: 400px;margin-right: 100px; " 
+      >
+        <v-card-title>MQTT Topic & Server Info</v-card-title>
+        <v-card-text>
+          <div >Topic: {{ mqttTopic }}</div>
+          <div >Server: {{ mqtthost }}</div>
+        </v-card-text>
+      </v-card>
     </v-row>
     <v-row class="row">
       <v-col cols="12">
@@ -223,6 +231,13 @@
       </v-col>
     </v-row>
   </v-container>
+  <v-dialog v-model="dialog2" max-width="400px">
+    <v-card>
+      <v-card-item>
+        <div>{{ type }} Connection {{ checkstat }}. {{ refresh }}</div>
+      </v-card-item>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
@@ -265,6 +280,12 @@ var soilmoisture = reactive({ min: 0, max: 0, avg: 0, range: 0 });
 const tempHiLine = ref(null); // Chart object
 const humLine = ref(null); // Chart object
 const histo = ref(null); // Chart object
+const checkstat = ref("failed");
+const type = ref("Server");
+const refresh = ref("Page will refresh in 5s");
+const dialog2=ref(false);
+const mqttTopic = ref("620152511"); // Variable to store MQTT topic input
+const mqtthost = ref("www.yanacreations.com");
 
 // FUNCTIONS
 
@@ -442,6 +463,30 @@ const updateLineCharts = async (rule) => {
   }
 };
 
+const check1 = () => {
+  dialog2.value=true;
+};
+const check2 =()=> {
+  refresh.value = "";
+  checkstat.value  = "success";
+  dialog2.value=true;
+};
+const check3 =()=> {
+  type.value = "Topic";
+  dialog2.value=true;
+};
+const check4 =()=> {
+  refresh.value = "";
+  type.value = "Topic";
+  checkstat.value  = "success";
+  dialog2.value=true;
+};
+const check5 =()=> {
+  type.value = "Connection";
+  checkstat.value  = "lost";
+  dialog2.value=true;
+};
+
 const updateCards = async (rule) => {
   // Retrieve Min, Max, Avg, Spread/Range
   if (!!start.value && !!end.value) {
@@ -519,6 +564,21 @@ const updateHistogramCharts = async () => {
 const celsiusToFahrenheit = (celsius) => {
       return (celsius * 9) / 5 + 32;
     };
+
+const autoRefresh = () => {
+  setTimeout(() => {
+    location.reload(); // Reload the page
+  }, 5000); // Refresh every 5000 milliseconds (5 seconds)
+};
+
+document.addEventListener('HostFailEvent',check1);
+document.addEventListener('FailTopicEvent',check3);
+document.addEventListener('LostEvent',check5);
+document.addEventListener('LostEvent',autoRefresh);
+document.addEventListener('HostFailEvent', autoRefresh);
+document.addEventListener('FailTopicEvent', autoRefresh);
+document.addEventListener('HostConnectEvent',check2);
+document.addEventListener('ConnectTopicEvent',check4);
 
 </script>
 
