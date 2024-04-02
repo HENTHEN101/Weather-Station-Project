@@ -43,6 +43,7 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
                 })
             }
         }
+        document.dispatchEvent(new Event('HostConnectEvent'));
     }
  
     const onConnectionLost = (response)=> {
@@ -53,9 +54,9 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
         // connectionComplete call back being invoked if, for example the client fails to connect. 
         if (response.errorCode !== 0) {
             console.log(`MQTT: Connection lost - ${response.errorMessage}`);
-            document.dispatchEvent(new Event('LostEvent'));
         }
-        }
+        document.dispatchEvent(new Event('LostEvent'));
+    }
   
     const onFailure = (response) => {
         // called when the connect request has failed or timed out.
@@ -92,6 +93,7 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
         const topic = response.invocationContext.topic;  
         console.log(`MQTT: Subscribed  to - ${topic}`);  
         subTopics.value[topic] = "subscribed"; 
+        document.dispatchEvent(new Event('ConnectTopicEvent'));
         }
 
     const sub_onFailure = (response) => {       

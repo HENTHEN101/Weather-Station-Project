@@ -2,12 +2,12 @@
       <v-btn @click="openDialog" class="change-topic-btn" color="primary">Change Topic</v-btn>
   <v-container class="container" align="center">
       <v-card
-      style="max-width: 500px;margin-bottom: 20px;" 
+        style="max-width: 1200px;margin-bottom: 20px; " 
       >
         <v-card-title>MQTT Topic & Server Info</v-card-title>
         <v-card-text>
-          <div>Topic: {{ mqttTopic }}</div>
-          <div>Server: {{ mqtthost }}</div>
+          <div >Topic: {{ mqttTopic }}</div>
+          <div >Server: {{ mqtthost }}</div>
         </v-card-text>
       </v-card>
 
@@ -19,7 +19,6 @@
       </v-col>
       <v-col cols="3">
         <v-card
-        
           class="mb-5"
           style="max-width: 500px"
           color="#ee6b6e"
@@ -38,23 +37,39 @@
             ></v-select>
           </v-card-item>
         </v-card>
-
+      </v-col>
+    </v-row>
+    <v-row class="row" justify="start">
+      <v-col cols="9">
+        <figure class="highcharts-figure" >
+          <div id="container1"></div>
+        </figure>
+      </v-col>
+      <v-col cols="3">
         <v-card
           class="mb-5"
-          style="max-width: 500px; margin-top: 200px;"
+          style="max-width: 500px;"
           color="#29C5F6"
           subtitle="Humidity and Soil Moisture"
-        >
+         >
           <v-card-item>
             <span class="text-onSecondaryContainer text-h3">
               {{ humidity }} / {{ soilmoisture }}
             </span>
           </v-card-item>
         </v-card>
-
+      </v-col>
+    </v-row>
+    <v-row class="row" justify="start">
+      <v-col cols="9">
+        <figure class="highcharts-figure" >
+          <div id="container2"></div>
+        </figure>
+      </v-col>
+      <v-col cols="3">
         <v-card
           class="mb-5"
-          style="max-width: 500px ; margin-top: 300px;"
+          style="max-width: 500px ;"
           color="#0B6E4F"
           subtitle="Pressure"
         >
@@ -71,10 +86,18 @@
             ></v-select>
           </v-card-item>
         </v-card>
-
+      </v-col>
+    </v-row>
+    <v-row class="row" justify="start">
+      <v-col cols="9">
+        <figure class="highcharts-figure" >
+          <div id="container3"></div>
+        </figure>
+      </v-col>
+      <v-col cols="3">
         <v-card
           class="mb-5"
-          style="max-width: 500px; margin-top: 250px;"
+          style="max-width: 500px;"
           color="#0BA045"
           subtitle="Altitude"
         >
@@ -91,27 +114,6 @@
             ></v-select>
           </v-card-item>
         </v-card>
-      </v-col>
-    </v-row>
-    <v-row class="row" justify="start">
-      <v-col cols="9">
-        <figure class="highcharts-figure" style="margin-top: -1180px;" >
-          <div id="container1"></div>
-        </figure>
-      </v-col>
-    </v-row>
-    <v-row class="row" justify="start">
-      <v-col cols="9">
-        <figure class="highcharts-figure"  style="margin-top: -740px;">
-          <div id="container2"></div>
-        </figure>
-      </v-col>
-    </v-row>
-    <v-row class="row" justify="start">
-      <v-col cols="9">
-        <figure class="highcharts-figure" style="margin-top: -300px;" >
-          <div id="container3"></div>
-        </figure>
       </v-col>
     </v-row>
   </v-container>
@@ -133,7 +135,7 @@
   <v-dialog v-model="dialog2" max-width="400px">
     <v-card>
       <v-card-item>
-        <div>{{ type }} Connection {{ checkstat }}. Page will refresh in 5s</div>
+        <div>{{ type }} Connection {{ checkstat }}. {{ refresh }}</div>
       </v-card-item>
     </v-card>
   </v-dialog>
@@ -175,6 +177,7 @@ const mqttTopic = ref(""); // Variable to store MQTT topic input
 const mqtthost = ref("www.yanacreations.com");
 const checkstat = ref("failed");
 const type = ref("Server");
+const refresh = ref("Page will refresh in 5s");
 const dialog = ref(false); // Variable to control the dialog visibility
 const dialog2=ref(false);
 
@@ -194,6 +197,8 @@ const shift = ref(false); // Delete a point from the left side and append a new 
 
 onMounted(() => {
   // THIS FUNCTION IS CALLED AFTER THIS COMPONENT HAS BEEN MOUNTED
+  //autoRefresh();
+
   const storedTopic = localStorage.getItem("mqttTopic");
   if(storedTopic !==""){
     mqttTopic.value = storedTopic;
@@ -205,6 +210,7 @@ onMounted(() => {
   CreateCharts_4();
 
   Mqtt.connect(); // Connect to Broker located on the backend
+
  
 });
 const openDialog = () => {
@@ -219,9 +225,25 @@ const check1 = () => {
   dialog2.value=true;
 };
 const check2 =()=> {
+  refresh.value = "";
   checkstat.value  = "success";
   dialog2.value=true;
-}
+};
+const check3 =()=> {
+  type.value = "Topic";
+  dialog2.value=true;
+};
+const check4 =()=> {
+  refresh.value = "";
+  type.value = "Topic";
+  checkstat.value  = "success";
+  dialog2.value=true;
+};
+const check5 =()=> {
+  type.value = "Connection";
+  checkstat.value  = "lost";
+  dialog2.value=true;
+};
 
 const subscribeToTopic = () => {
   // Subscribe to the MQTT topic provided by the user
@@ -475,6 +497,8 @@ const autoRefresh = () => {
   }, 5000); // Refresh every 5000 milliseconds (5 seconds)
 };
 
+
+
 const clearCharts = () => {
   // Clear chart data
   tempHiChart.value.series[0].setData([], true);
@@ -486,9 +510,13 @@ const clearCharts = () => {
 };
 
 document.addEventListener('HostFailEvent',check1);
-document.addEventListener('FailTopicEvent',check1);
+document.addEventListener('FailTopicEvent',check3);
+document.addEventListener('LostEvent',check5);
+document.addEventListener('LostEvent',autoRefresh);
 document.addEventListener('HostFailEvent', autoRefresh);
 document.addEventListener('FailTopicEvent', autoRefresh);
+document.addEventListener('HostConnectEvent',check2);
+document.addEventListener('ConnectTopicEvent',check4);
 </script>
 
 
@@ -499,7 +527,7 @@ document.addEventListener('FailTopicEvent', autoRefresh);
 .container {
   background: linear-gradient(to bottom, #ee6b6e, #29C5F6,#0B6E4F, #0BA045);
   width: 1200px;
-  height: 2000px;
+  height: 1900px;
   margin-right:100px ;
   margin-top: -50px;
 }
