@@ -43,8 +43,8 @@
 
 // define data pin and wet to dry values for soil mositure semsor
 #define soil 32
-#define wet 0
-#define dry 353
+#define wet 2317
+#define dry 3520
 
 //deefine buttons 
 #define BTN1      33
@@ -619,10 +619,10 @@ void Menu_display() {
 
 void GetBMPData(){
   p = bmp.readPressure();
-  //Serial.println(p);
+  Serial.println(p);
   //1014.8 hpa pressure is gain  from mathhew davis weather staion
   E = bmp.readAltitude(1014.8);
-  //Serial.println(E);
+  Serial.println(E);
   if(isnan(p) || isnan(E)){
     return;
   }
@@ -641,13 +641,13 @@ void GetDHT11Data() {
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   h = dht.readHumidity();
-  //Serial.println(h);
+  Serial.println(h);
   // Read temperature as Celsius (the default)
   t = dht.readTemperature();
-  //Serial.println(t);
+  Serial.println(t);
   // Read temperature as Fahrenheit (isFahrenheit = true)
   f = dht.readTemperature(true);
-  //Serial.println(f);
+  Serial.println(f);
 
   // Check if any reads failed and exit early (to try again).
   if (isnan(h) || isnan(t) || isnan(f)) {
@@ -657,10 +657,10 @@ void GetDHT11Data() {
 
   // Compute heat index in Fahrenheit (the default)
   hif = dht.computeHeatIndex(f, h);
-  //Serial.println(hif);
+  Serial.println(hif);
   // Compute heat index in Celsius (isFahreheit = false)
   hic = dht.computeHeatIndex(t, h, false);
-  //Serial.println(hic);
+  Serial.println(hic);
 }
 //========================================================================
 

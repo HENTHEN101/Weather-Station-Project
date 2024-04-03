@@ -174,6 +174,7 @@ const route = useRoute();
 const Mqtt = useMqttStore();
 const { payload, payloadTopic } = storeToRefs(Mqtt);
 const mqttTopic = ref(""); // Variable to store MQTT topic input
+const currentTopic = ref(""); // Variable to store the current subscribed topic
 const mqtthost = ref("www.yanacreations.com");
 const checkstat = ref("failed");
 const type = ref("Server");
@@ -216,6 +217,7 @@ onMounted(() => {
     
   }, 3000);
   mqttTopic.value="620152511";
+  currentTopic.value="620152511";
 
  
 });
@@ -252,15 +254,19 @@ const check5 =()=> {
 };
 
 const subscribeToTopic = () => {
- // Unsubscribe from the previous topic
-  //Mqtt.unsubcribe(mqttTopic.value);
-  // Subscribe to the MQTT topic provided by the user
   if (mqttTopic.value.trim() !== "" ) {
+    // Unsubscribe from the previous topic
+    if (currentTopic.value !== "") {
+      Mqtt.unsubcribe(currentTopic.value);
+    }
+    // Subscribe to the new MQTT topic provided by the user
     clearCharts();
     Mqtt.subscribe(mqttTopic.value);
     Mqtt.subscribe(mqttTopic.value + "_sub");
+    // Update the current subscribed topic
+    currentTopic.value = mqttTopic.value;
     dialog.value = false; // Close the dialog after subscription
-   localStorage.setItem("mqttTopic", mqttTopic.value); // Store the topic in local storage
+    localStorage.setItem("mqttTopic", mqttTopic.value); // Store the topic in local storage
   } else {
     // Show an error message if the topic is empty
     alert("Please enter a valid MQTT topic.");
