@@ -459,6 +459,7 @@ const updateLineCharts = async (rule) => {
   }
     // Add data to Temperature and Heat Index chart
     tempHiLine.value.series[0].setData(temperature);
+    tempHiLine.value.series[1].setData(heatindex);
     humLine.value.series[0].setData(humidity);
   }
 };
@@ -525,10 +526,10 @@ const updateCards = async (rule) => {
     pressure.avg = air[0].avg.toFixed(1);
     pressure.range = air[0].range.toFixed(1);
 
-    moisture.min = soil[0].min.toFixed(1);
-    moisture.max = soil[0].max.toFixed(1);
-    moisture.avg = soil[0].avg.toFixed(1);
-    moisture.range = soil[0].range.toFixed(1);
+    soilmoisture.min = soil[0].min.toFixed(1);
+    soilmoisture.max = soil[0].max.toFixed(1);
+    soilmoisture.avg = soil[0].avg.toFixed(1);
+    soilmoisture.range = soil[0].range.toFixed(1);
 }
   
 
