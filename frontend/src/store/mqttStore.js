@@ -66,7 +66,7 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
         };
     
     const onMessageArrived = (response) => {
-           // called when a message has arrived in this Paho.MQTT.client.
+           // called when a message has arrived in this Paho.MQTT.client
            try {
             payload.value       = JSON.parse(response.payloadString); 
             payloadTopic.value  = response.destinationName;

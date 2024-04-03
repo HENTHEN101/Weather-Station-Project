@@ -42,14 +42,14 @@
 #define DHTTYPE DHT22 // define the type of sensor
 
 // define data pin and wet to dry values for soil mositure semsor
-#define soilS 33
+#define soil 32
 #define wet 0
 #define dry 353
 
 //deefine buttons 
-#define BTN1      25
-#define BTN2      26
-#define BTN3      27
+#define BTN1      33
+#define BTN2      27
+#define BTN3      2
 //define tft control and data pins
 #define TFT_DC    17
 #define TFT_CS    5
@@ -629,8 +629,8 @@ void GetBMPData(){
 }
 
 void GetSoilData(){
-  m = analogRead(soilS);
-  //Serial.println(m);
+  m = analogRead(soil);
+  Serial.println(m);
   if(isnan(m)){
     return;
   }
