@@ -272,7 +272,7 @@ const tempHiLine = ref(null); // Chart object
 const humLine = ref(null); // Chart object
 const histo = ref(null); // Chart object
 const checkstat = ref("failed");
-const type = ref("Server");
+const type = ref("yanacreations Server");
 const refresh = ref("Page will refresh in 5s");
 const dialog2=ref(false);
 const mqttTopic = ref("620152511"); // Variable to store MQTT topic input
@@ -463,12 +463,12 @@ const check2 =()=> {
   dialog2.value=true;
 };
 const check3 =()=> {
-  type.value = "Topic";
+  type.value = "620152511 Topic";
   dialog2.value=true;
 };
 const check4 =()=> {
   refresh.value = "";
-  type.value = "Topic";
+  type.value = "620152511 Topic";
   checkstat.value  = "success";
   dialog2.value=true;
 };
