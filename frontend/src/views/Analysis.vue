@@ -201,15 +201,6 @@
           variant="tonal"
           ></v-btn>
       </v-col>
-      <v-card
-        style="max-width: 400px;margin-right: 100px; " 
-      >
-        <v-card-title>MQTT Topic & Server Info</v-card-title>
-        <v-card-text>
-          <div >Topic: {{ mqttTopic }}</div>
-          <div >Server: {{ mqtthost }}</div>
-        </v-card-text>
-      </v-card>
     </v-row>
     <v-row class="row">
       <v-col cols="12">
@@ -459,7 +450,6 @@ const updateLineCharts = async (rule) => {
   }
     // Add data to Temperature and Heat Index chart
     tempHiLine.value.series[0].setData(temperature);
-    tempHiLine.value.series[1].setData(heatindex);
     humLine.value.series[0].setData(humidity);
   }
 };
