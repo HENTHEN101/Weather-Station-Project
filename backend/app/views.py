@@ -27,20 +27,23 @@ from math import floor
 
 @app.route('/api/station/get/<start>/<end>', methods=['GET']) 
 def get_all(start,end):   
+    start = escape(start)
+    end = escape(end)
     '''RETURNS ALL THE DATA FROM THE DATABASE THAT EXIST IN BETWEEN THE START AND END TIMESTAMPS'''
-    start= int(start)
-    end= int(end)
-   
+    # print(f"Start Date: {start}")
+    # print(f"End Date: {end}")
+    # print(type(start))
+    # print(type(end))
     if request.method == "GET":
+        '''Add your code here to complete this route'''
         try:
-            item= mongo.getAllInRange(start, end)
-        
-            if item:
-                return jsonify({"status":"found","data":item})
-        
+            item = mongo.getAllInRange(start,end)
+            data = list(item)
+            if data:
+                return jsonify({"status":"found","data": data})
+            
         except Exception as e:
-            msg = str(e)
-            print(f"get_all error: f{str(e)}")
+            print(f"get_all error: f{str(e)}") 
 
     # FILE DATA NOT EXIST
     return jsonify({"status":"not found","data":[]})
@@ -49,138 +52,91 @@ def get_all(start,end):
 
 
 @app.route('/api/mmar/temperature/<start>/<end>', methods=['GET']) 
-def get_temperature_mmar(start, end):
-        '''RETURNS MIN, MAX, AVG AND RANGE FOR TEMPERATURE. THAT FALLS WITHIN THE START AND END DATE RANGE'''
-        start= int(start)
-        end= int(end)
-        print(f"Start Date: {start}")
-        print(f"End Date: {end}")
-        print(type(start))
-        print(type(end))
-        if request.method == "GET":
-            try:
-                item= mongo.temperatureMMAR(start, end)
-                print(f"Item: {item}")
-                if item:
-
-                    return jsonify({"status":"found","data":item})
-                    print("No data")
-            except Exception as e:
-                msg = str(e)
-                print(f"get_all error: f{str(e)}")
-
-        return jsonify({"status":"not found","data":[]})
-
-
-
-
-
-@app.route('/api/mmar/humidity/<start>/<end>', methods=['GET'])
-def get_humidity_mmar(start, end):
-        '''RETURNS MIN, MAX, AVG AND RANGE FOR HUMIDITY. THAT FALLS WITHIN THE START AND END DATE RANGE'''
-        start= int(start)
-        end= int(end)
-
-        if request.method == "GET":
-            try:
-                item= mongo.humidityMMAR(start, end)
-                if item:
-                    return jsonify({"status":"found","data":item})
-            
-            except Exception as e:
-                msg = str(e)
-                print(f"get_all error: f{str(e)}")
-
-            return jsonify({"status":"not found","data":[]})
-
-@app.route('/api/mmar/pressure/<start>/<end>', methods=['GET'])
-def get_pressure_mmar(start, end):
-        '''RETURNS MIN, MAX, AVG AND RANGE FOR PRESSURE. THAT FALLS WITHIN THE START AND END DATE RANGE'''
-        start= int(start)
-        end= int(end)
-        print(f"Start Date: {start}")
-        print(f"End Date: {end}")
-
-        if request.method == "GET":
-            try:
-                item= mongo.pressureMMAR(start, end)
-                if item:
-                    return jsonify({"status":"found","data":item})
-            
-            except Exception as e:
-                msg = str(e)
-                print(f"get_all error: f{str(e)}")
-
-            return jsonify({"status":"not found","data":[]})
-
-@app.route('/api/mmar/soilmoisture/<start>/<end>', methods=['GET'])
-def get_soil_mmar(start, end):
-        '''RETURNS MIN, MAX, AVG AND RANGE FOR SOIL MOISTURE. THAT FALLS WITHIN THE START AND END DATE RANGE'''
-        start= int(start)
-        end= int(end)
-
-        if request.method == "GET":
-            try:
-                item= mongo.soilMMAR(start, end)
-                if item:
-                    return jsonify({"status":"found","data":item})
-            
-            except Exception as e:
-                msg = str(e)
-                print(f"get_all error: f{str(e)}")
-
-            return jsonify({"status":"not found","data":[]})
-
-
-
-
-
-@app.route('/api/frequency/<variable>/<start>/<end>', methods=['GET'])
-def get_freq_distro(variable,start, end):
-        '''RETURNS THE FREQUENCY DISTROBUTION FOR A SPECIFIED VARIABLE WITHIN THE START AND END DATE RANGE'''
-        start= int(start)
-        end= int(end)
-        variable= str(variable)
-
-        if request.method == "GET":
-            try:
-                item= mongo.frequencyDistro(variable, start, end)
-                if item:
-                    return jsonify({"status":"found","data":item})
-            
-            except Exception as e:
-                msg = str(e)
-                print(f"get_all error: f{str(e)}")
-
-            return jsonify({"status":"not found","data":[]})
-
-
+def get_temperature_mmar(start,end):
+    start = escape(start)
+    end = escape(end)   
+    '''RETURNS MIN, MAX, AVG AND RANGE FOR TEMPERATURE. THAT FALLS WITHIN THE START AND END DATE RANGE'''
    
+    if request.method == "GET": 
+        '''Add your code here to complete this route'''
+        try:
+            item = mongo.temperatureMMAR(start,end)
+            data = list(item)
+            if data:
+                return jsonify({"status":"found","data": data})
+            
+        except Exception as e:
+            print(f"get_all error: f{str(e)}")
+        
+
+    # FILE DATA NOT EXIST
+    return jsonify({"status":"not found","data":[]})
 
 
 
+
+
+@app.route('/api/mmar/humidity/<start>/<end>', methods=['GET']) 
+def get_humidity_mmar(start,end):
+    start = escape(start)
+    end = escape(end)   
+    '''RETURNS MIN, MAX, AVG AND RANGE FOR HUMIDITY. THAT FALLS WITHIN THE START AND END DATE RANGE'''
+   
+    if request.method == "GET": 
+        '''Add your code here to complete this route'''
+        try:
+            item = mongo.humidityMMAR(start,end)
+            data = list(item)
+            if data:
+                return jsonify({"status":"found","data": data})
+            
+        except Exception as e:
+            print(f"get_humidity_mmar error: f{str(e)}") 
+
+    # FILE DATA NOT EXIST
+    return jsonify({"status":"not found","data":[]})
+
+
+
+
+
+@app.route('/api/frequency/<variable>/<start>/<end>', methods=['GET']) 
+def get_freq_distro(variable,start,end):
+    start = escape(start)
+    end = escape(end)   
+    '''RETURNS FREQUENCY DISTRIBUTION FOR SPECIFIED VARIABLE'''
+   
+    if request.method == "GET": 
+        '''Add your code here to complete this route'''    
+        try:
+            data = mongo.frequencyDistro(variable,start,end)
+            
+            if data:
+                return jsonify({"status":"found","data": data})
+            
+        except Exception as e:
+            print(f"get_freq_distro error: f{str(e)}")     
+
+    # FILE DATA NOT EXIST
+    return jsonify({"status":"not found","data":[]})
 
 
 
 @app.route('/api/file/get/<filename>', methods=['GET']) 
 def get_images(filename):   
-    '''Returns requested file from uploads folder'''
+    '''RETURNS REQUESTED FILE FROM UPLOADS FOLDER'''
    
     if request.method == "GET":
-        directory   = join( getcwd(), Config.UPLOADS_FOLDER) 
-        filePath    = join( getcwd(), Config.UPLOADS_FOLDER, filename) 
-
-        # RETURN FILE IF IT EXISTS IN FOLDER
-        if exists(filePath):        
-            return send_from_directory(directory, filename)
+        '''Add your code here to complete this route'''
         
         # FILE DOES NOT EXIST
         return jsonify({"status":"file not found"}), 404
 
 
+
 @app.route('/api/file/upload',methods=["POST"])  
 def upload():
-    '''Saves a file to the uploads folder'''
+    '''SAVES A FILE TO THE UPLOADS FOLDER'''
     
     if request.method == "POST": 
         file     = request.files['file']
