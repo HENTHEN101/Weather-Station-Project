@@ -209,7 +209,13 @@ onMounted(() => {
   CreateCharts_4();
 
   Mqtt.connect(); // Connect to Broker located on the backend
-  dialog.value=true;
+  setTimeout(() => {
+    // Subscribe to each topic
+    Mqtt.subscribe("620152511");
+    Mqtt.subscribe("620152511_sub");
+    
+  }, 3000);
+  mqttTopic.value="620152511";
 
  
 });
