@@ -503,7 +503,6 @@ void draw_moisture_sensor(){
 
 
 void showSoilData(){
-  pre = map(m,wet,dry,100,0);
   tft.setTextSize(2);
   tft.setTextColor(CYAN,LTBLUE);
   tft.setCursor(65, 150);
@@ -631,6 +630,10 @@ void GetBMPData(){
 void GetSoilData(){
   m = analogRead(soil);
   Serial.println(m);
+  pre = map(m,wet,dry,100,0);
+  if(pre>100){
+    pre=100;
+  }
   if(isnan(m)){
     return;
   }
