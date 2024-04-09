@@ -17,7 +17,7 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
         
     // STATES 
     const mqtt              = ref(null);
-    const host              = ref("www.yanacreations.com");  // Host Name or IP address
+    //const host              = ref("www.yanacreations.com");  // Host Name or IP address
     const port              = ref(9002);  // Port number
     const payload           = ref({"temperature":0, "heatindex": 0, "humidity": 0,"soilmositure": 0,"pressure": 0,"altitude": 0}); // Set initial values for payload
     const payloadTopic      = ref("");
@@ -161,9 +161,11 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
     const disconnect = () => {  
         mqtt.value.disconnect();                     
         }
- 
+    
 
-    const connect = ()=> {
+
+
+    /*const connect = ()=> {
         var IDstring = makeid(12);
         
         console.log(`MQTT: Connecting to Server : ${host.value} Port : ${port.value}` );
@@ -175,6 +177,28 @@ export const useMqttStore =  defineStore('mqtt', ()=>{
         mqtt.value.onMessageArrived   = onMessageArrived;
         mqtt.value.onConnected        = onConnected;
         mqtt.value.connect(options);    
+    };*/
+
+    const connect = (host) => { // 1. Add host parameter
+        var IDstring = makeid(12);
+    
+        console.log(`MQTT: Connecting to Server : ${host} Port : ${port.value}`);
+        mqtt.value = new Paho.MQTT.Client(host, port.value, "/mqtt", IDstring); // 2. Utilize host parameter
+    
+        var options = {
+            timeout: 3,
+            onSuccess: onSuccess,
+            onFailure: onFailure,
+            invocationContext: { "host": host, "port": port.value }, // 3. Pass host parameter in options
+            useSSL: false,
+            reconnect: true,
+            uris: [`ws://${host}:${port.value}/mqtt`]
+        };
+    
+        mqtt.value.onConnectionLost = onConnectionLost;
+        mqtt.value.onMessageArrived = onMessageArrived;
+        mqtt.value.onConnected = onConnected;
+        mqtt.value.connect(options);
     };
 
  

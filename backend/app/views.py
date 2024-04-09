@@ -30,10 +30,6 @@ def get_all(start,end):
     start = escape(start)
     end = escape(end)
     '''RETURNS ALL THE DATA FROM THE DATABASE THAT EXIST IN BETWEEN THE START AND END TIMESTAMPS'''
-    # print(f"Start Date: {start}")
-    # print(f"End Date: {end}")
-    # print(type(start))
-    # print(type(end))
     if request.method == "GET":
         '''Add your code here to complete this route'''
         try:
@@ -47,8 +43,6 @@ def get_all(start,end):
 
     # FILE DATA NOT EXIST
     return jsonify({"status":"not found","data":[]})
-   
-
 
 
 @app.route('/api/mmar/temperature/<start>/<end>', methods=['GET']) 
@@ -72,10 +66,6 @@ def get_temperature_mmar(start,end):
     # FILE DATA NOT EXIST
     return jsonify({"status":"not found","data":[]})
 
-
-
-
-
 @app.route('/api/mmar/humidity/<start>/<end>', methods=['GET']) 
 def get_humidity_mmar(start,end):
     start = escape(start)
@@ -95,10 +85,6 @@ def get_humidity_mmar(start,end):
 
     # FILE DATA NOT EXIST
     return jsonify({"status":"not found","data":[]})
-
-
-
-
 
 @app.route('/api/frequency/<variable>/<start>/<end>', methods=['GET']) 
 def get_freq_distro(variable,start,end):

@@ -39,19 +39,13 @@ class MQTT:
         #self.client.message_callback_add("620152511_sub",self.update)
         #self.client.message_callback_add("620152511_pub",self.update)
      
-
-         
-
         # 4. UPDATE MQTT SERVER AND PORT INFORMATION BELOW
         self.client.connect_async("www.yanacreations.com", 1883, 60)
        
-
-
     def connack_string(self,rc):
         connection = {0: "Connection successful", 1: "Connection refused - incorrect protocol version", 2: "Connection refused - invalid client identifier", 3: "Connection refused - server unavailable", 4: "Connection refused - bad username or password", 5: "Connection refused - not authorised" }
         return connection[rc]
 
- 
     def on_connect(self,client, userdata, flags, rc):
         # Called when the broker responds to our connection request.
         print("\n\nMQTT: "+ self.connack_string(rc)," ID: ",client._client_id.decode('utf-8'))

@@ -197,19 +197,13 @@ const shift = ref(false); // Delete a point from the left side and append a new 
 // FUNCTIONS
 
 onMounted(() => {
-  // THIS FUNCTION IS CALLED AFTER THIS COMPONENT HAS BEEN MOUNTED
-  //autoRefresh();
-
-  /*const storedTopic = localStorage.getItem("mqttTopic");
-  if(storedTopic !==""){
-    mqttTopic.value = storedTopic;
-  }*/
+ 
   CreateCharts();
   CreateCharts_2();
   CreateCharts_3();
   CreateCharts_4();
 
-  Mqtt.connect(); // Connect to Broker located on the backend
+  Mqtt.connect("www.yanacreations.com"); // Connect to Broker located on the backend
   setTimeout(() => {
     // Subscribe to each topic
     Mqtt.subscribe("620152511");
