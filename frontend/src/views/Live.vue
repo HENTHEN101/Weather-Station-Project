@@ -175,7 +175,7 @@ const Mqtt = useMqttStore();
 const { payload, payloadTopic } = storeToRefs(Mqtt);
 const mqttTopic = ref(""); // Variable to store MQTT topic input
 const currentTopic = ref(""); // Variable to store the current subscribed topic
-const mqtthost = ref("www.yanacreations.com");
+const mqtthost = ref("");
 const checkstat = ref("failed");
 const type = ref("Server");
 const refresh = ref("Page will refresh in 5s");
@@ -212,6 +212,7 @@ onMounted(() => {
   }, 3000);
   mqttTopic.value="620152511";
   currentTopic.value="620152511";
+  mqtthost.value="www.yanacreations.com";
 
  
 });
