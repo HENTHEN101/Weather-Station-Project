@@ -16,15 +16,16 @@ export const useAppStore = defineStore('app', () => {
         const controller = new AbortController();
         const signal = controller.signal;
         const id = setTimeout(() => { controller.abort() }, 60000);
-        const URL = `/api/station/get/${start}/${end}`;
+        const URL = `/api/weather/get/${start}/${end}`;
         try {
             const response = await fetch(URL, { method: 'GET', signal: signal });
             if (response.ok) {
                 const data = await response.json();
+                
                 let keys = Object.keys(data);
                 if (keys.includes("status")) {
                     if (data["status"] == "found") {
-                        console.log(data["data"]);
+                        
                         return data["data"];
                     }
                     if (data["status"] == "failed"
@@ -45,7 +46,6 @@ export const useAppStore = defineStore('app', () => {
         return []
     }
 
-    
 
 
     const getTemperatureMMAR = async (start, end) => {
@@ -54,16 +54,19 @@ export const useAppStore = defineStore('app', () => {
         const signal = controller.signal;
         const id = setTimeout(() => { controller.abort() }, 60000);
         const URL = `/api/mmar/temperature/${start}/${end}`;
+        ;
         try {
             const response = await fetch(URL, { method: 'GET', signal: signal });
+        
             if (response.ok) {
                 const data = await response.json();
+                
                 let keys = Object.keys(data);
                 if (keys.includes("status")) {
-                    
-                        console.log(`data is ${data["data"]}`);
+                    if (data["status"] == "found") {
+                        console.log(data["data"]);
                         return data["data"];
-              
+                    }
                     if (data["status"] == "failed"
                     ) {
                         console.log("getTemperatureMMAR returned no data");
@@ -116,6 +119,72 @@ export const useAppStore = defineStore('app', () => {
         return []
     }
 
+    const getPressureMMAR = async (start, end) => {
+        // FETCH REQUEST WILL TIMEOUT AFTER 20 SECONDS
+        const controller = new AbortController();
+        const signal = controller.signal;
+        const id = setTimeout(() => { controller.abort() }, 60000);
+        const URL = `/api/mmar/pressure/${start}/${end}`;
+        try {
+            const response = await fetch(URL, { method: 'GET', signal: signal });
+            if (response.ok) {
+                const data = await response.json();
+                let keys = Object.keys(data);
+                if (keys.includes("status")) {
+                    if (data["status"] == "found") {
+                        console.log(data["data"]);
+                        return data["data"];
+                    }
+                    if (data["status"] == "failed"
+                    ) {
+                        console.log("getPressureMMAR returned no data");
+                    }
+                }
+            }
+            else {
+                const data = await response.text();
+                console.log(data);
+            }
+
+        }
+        catch (err) {
+            console.error('getPressureMMAR error: ', err.message);
+        }
+        return []
+    }
+
+    const getSoilMMAR = async (start, end) => {
+        // FETCH REQUEST WILL TIMEOUT AFTER 20 SECONDS
+        const controller = new AbortController();
+        const signal = controller.signal;
+        const id = setTimeout(() => { controller.abort() }, 60000);
+        const URL = `/api/mmar/moisture/${start}/${end}`;
+        try {
+            const response = await fetch(URL, { method: 'GET', signal: signal });
+            if (response.ok) {
+                const data = await response.json();
+                let keys = Object.keys(data);
+                if (keys.includes("status")) {
+                    if (data["status"] == "found") {
+                        console.log(data["data"]);
+                        return data["data"];
+                    }
+                    if (data["status"] == "failed"
+                    ) {
+                        console.log("getSoilMMAR returned no data");
+                    }
+                }
+            }
+            else {
+                const data = await response.text();
+                console.log(data);
+            }
+        }
+        catch (err) {
+            console.error('getSoilMMAR error: ', err.message);
+        }
+        return []
+    }
 
 
     const getFreqDistro = async (variable, start, end) => {
@@ -131,7 +200,7 @@ export const useAppStore = defineStore('app', () => {
                 let keys = Object.keys(data);
                 if (keys.includes("status")) {
                     if (data["status"] == "found") {
-                        console.log(data["data"]);
+                       
                         return data["data"];
                     }
                     if (data["status"] == "failed"
@@ -163,6 +232,8 @@ export const useAppStore = defineStore('app', () => {
         getAllInRange,
         getTemperatureMMAR,
         getHumidityMMAR,
+        getPressureMMAR,
         getFreqDistro,
+        getSoilMMAR
     }
 }, { persist: true });
